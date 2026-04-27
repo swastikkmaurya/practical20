@@ -24,7 +24,11 @@ A second map is generated identically but with color="Recovered" and color_conti
 
 India Choropleth Map — Custom GeoJSON with px.choropleth():
 
-Unlike the world map which uses Plotly's built-in country boundaries, mapping Indian states requires custom geographic boundary data. A GeoJSON file containing state outlines is downloaded from a public GitHub URL using urllib.request.urlopen() and parsed into a Python dictionary using json.load(). A copy of top_state is made using copy() and an Active column is computed on it before passing it to the map function.
+Unlike the world map which uses Plotly's built-in country boundaries, mapping Indian states requires custom geographic boundary data. A GeoJSON file containing state outlines is downloaded from a public GitHub URL using urllib.request.urlopen() and parsed into a Python dictionary using json.load(). A copy of top_state is made using copy() and an Active column is computed on it before passing it to the map function.   
+
+The full dataset is filtered using boolean indexing to keep only rows where Country/Region equals "India", producing a dedicated india DataFrame. Province-level exploration is then performed: nunique() counts how many distinct state names appear in the Province/State column, and unique() lists all of those state names as recorded in the dataset.
+
+<img width="1807" height="592" alt="image" src="https://github.com/user-attachments/assets/1f8d275d-989a-4407-807c-89f0ac344a44" />
 
 px.choropleth() is called with the following key parameters:
 
@@ -43,11 +47,7 @@ color_continuous_scale="Reds": The colour palette applied to the fill.
 
 title: Sets the figure title to "COVID-19 Confirmed Cases by Indian State".  
 
-labels={"Confirmed": "Confirmed Cases"}: Renames the colour bar label for clarity.   
-
-The full dataset is filtered using boolean indexing to keep only rows where Country/Region equals "India", producing a dedicated india DataFrame. Province-level exploration is then performed: nunique() counts how many distinct state names appear in the Province/State column, and unique() lists all of those state names as recorded in the dataset.
-
-<img width="1807" height="592" alt="image" src="https://github.com/user-attachments/assets/1f8d275d-989a-4407-807c-89f0ac344a44" />
+labels={"Confirmed": "Confirmed Cases"}: Renames the colour bar label for clarity.
 
 
 
