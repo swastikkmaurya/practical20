@@ -6,10 +6,14 @@ The theory centers on the data science lifecycle, which begins with data ingesti
 By integrating libraries for data manipulation, visualization, and predictive modeling, this program demonstrates how to transform raw pandemic data into actionable insights, such as identifying hotspots or forecasting mortality trends.  
 
 Parameter breakdown:
-locations="Country/Region": The column containing the geographic identifiers (country names).   
+locations="Country/Region": The column containing the geographic identifiers (country names). 
+
 locationmode="country names": Tells Plotly to match the string values against its built-in country name lookup table.   
+
 color="Confirmed": The column whose values control the fill colour of each country.   
-color_continuous_scale="reds": A sequential colour palette where low values appear light red and high values appear dark red.   
+
+color_continuous_scale="reds": A sequential colour palette where low values appear light red and high values appear dark red. 
+
 range_color=[0, 10000000]: Fixes the minimum and maximum of the colour scale explicitly, ensuring consistent colour mapping regardless of data extremes. Without this, the scale auto-adjusts, which can visually distort lightly affected regions.   
 
 A second map is generated identically but with color="Recovered" and color_continuous_scale="greens", allowing a direct visual comparison of confirmed versus recovered case distributions across the globe.
@@ -24,14 +28,21 @@ Unlike the world map which uses Plotly's built-in country boundaries, mapping In
 
 px.choropleth() is called with the following key parameters:
 
-geojson=india_geojson: Passes the custom GeoJSON geometry so Plotly knows the boundaries of each Indian state.   
+geojson=india_geojson: Passes the custom GeoJSON geometry so Plotly knows the boundaries of each Indian state. 
+
 featureidkey="properties.NAME_1": The path within the GeoJSON feature properties that holds the state name. Plotly matches values at this path against the locations column to link each row of data to its corresponding boundary on the map.   
+
 locations="Province/State": The DataFrame column containing state names to match against the GeoJSON.  
 color="Confirmed": The column whose values determine the fill colour intensity.   
+
 hover_name="Province/State": The column whose value appears as the primary label in the interactive tooltip when hovering over a state.  
+
 hover_data={"Confirmed": True, "Recovered": True, "Active": True}: Specifies additional columns to display in the hover tooltip alongside the primary label.   
+
 color_continuous_scale="Reds": The colour palette applied to the fill.   
-title: Sets the figure title to "COVID-19 Confirmed Cases by Indian State".   
+
+title: Sets the figure title to "COVID-19 Confirmed Cases by Indian State".  
+
 labels={"Confirmed": "Confirmed Cases"}: Renames the colour bar label for clarity.   
 
 The full dataset is filtered using boolean indexing to keep only rows where Country/Region equals "India", producing a dedicated india DataFrame. Province-level exploration is then performed: nunique() counts how many distinct state names appear in the Province/State column, and unique() lists all of those state names as recorded in the dataset.
