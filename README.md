@@ -4,6 +4,8 @@ Aim: To perform extensive data cleaning, exploratory data analysis (EDA), and ge
 
 Exploratory Data Analysis (EDA) is an approach to analyzing data sets to summarize their main characteristics, often with visual methods. In the context of the COVID-19 pandemic, EDA helps in understanding the trajectory of the virus, identifying hotspots, and evaluating recovery rates across different geographical regions.
 
+<img width="1808" height="543" alt="image" src="https://github.com/user-attachments/assets/61ebb026-a0d5-4134-92c0-0a7b8c8a1d1d" />
+
 Key Metrics Used:
 
 Confirmed Cases: Total number of people infected.
