@@ -1,66 +1,113 @@
 Aim: To perform extensive data cleaning, exploratory data analysis (EDA), and geospatial visualization on the global COVID-19 dataset using Python.
 
-1. Theory
+## Theory:
+This experiment focuses on End-to-End Data Analysis and Predictive Modeling, specifically applied to a COVID-19 dataset.   
+The theory centers on the data science lifecycle, which begins with data ingestion and cleaning, followed by exploratory analysis to find trends (such as growth rates in confirmed cases), and concludes with machine learning to predict future outcomes. 
+By integrating libraries for data manipulation, visualization, and predictive modeling, this program demonstrates how to transform raw pandemic data into actionable insights, such as identifying hotspots or forecasting mortality trends.  
 
-Exploratory Data Analysis (EDA) is an approach to analyzing data sets to summarize their main characteristics, often with visual methods. In the context of the COVID-19 pandemic, EDA helps in understanding the trajectory of the virus, identifying hotspots, and evaluating recovery rates across different geographical regions.
+Parameter breakdown:
+locations="Country/Region": The column containing the geographic identifiers (country names).   
+locationmode="country names": Tells Plotly to match the string values against its built-in country name lookup table.   
+color="Confirmed": The column whose values control the fill colour of each country.   
+color_continuous_scale="reds": A sequential colour palette where low values appear light red and high values appear dark red.   
+range_color=[0, 10000000]: Fixes the minimum and maximum of the colour scale explicitly, ensuring consistent colour mapping regardless of data extremes. Without this, the scale auto-adjusts, which can visually distort lightly affected regions.   
+
+A second map is generated identically but with color="Recovered" and color_continuous_scale="greens", allowing a direct visual comparison of confirmed versus recovered case distributions across the globe.
 
 <img width="1808" height="543" alt="image" src="https://github.com/user-attachments/assets/61ebb026-a0d5-4134-92c0-0a7b8c8a1d1d" />
 
-Key Metrics Used:
+<img width="1808" height="542" alt="image" src="https://github.com/user-attachments/assets/6c4a7125-1eb0-46ee-9994-a3fab639003a" />
 
-Confirmed Cases: Total number of people infected.
+India Choropleth Map — Custom GeoJSON with px.choropleth():
 
-Deaths: Total number of fatalities.
+Unlike the world map which uses Plotly's built-in country boundaries, mapping Indian states requires custom geographic boundary data. A GeoJSON file containing state outlines is downloaded from a public GitHub URL using urllib.request.urlopen() and parsed into a Python dictionary using json.load(). A copy of top_state is made using copy() and an Active column is computed on it before passing it to the map function.
 
-Recovered: Total number of people who survived the infection.
+px.choropleth() is called with the following key parameters:
 
-Active Cases: Calculated as Active=Confirmed−(Deaths+Recovered). This represents the current burden on the healthcare system.
+geojson=india_geojson: Passes the custom GeoJSON geometry so Plotly knows the boundaries of each Indian state.   
+featureidkey="properties.NAME_1": The path within the GeoJSON feature properties that holds the state name. Plotly matches values at this path against the locations column to link each row of data to its corresponding boundary on the map.   
+locations="Province/State": The DataFrame column containing state names to match against the GeoJSON.  
+color="Confirmed": The column whose values determine the fill colour intensity.   
+hover_name="Province/State": The column whose value appears as the primary label in the interactive tooltip when hovering over a state.  
+hover_data={"Confirmed": True, "Recovered": True, "Active": True}: Specifies additional columns to display in the hover tooltip alongside the primary label.   
+color_continuous_scale="Reds": The colour palette applied to the fill.   
+title: Sets the figure title to "COVID-19 Confirmed Cases by Indian State".   
+labels={"Confirmed": "Confirmed Cases"}: Renames the colour bar label for clarity.   
 
-2. Algorithm & Workflow
+The full dataset is filtered using boolean indexing to keep only rows where Country/Region equals "India", producing a dedicated india DataFrame. Province-level exploration is then performed: nunique() counts how many distinct state names appear in the Province/State column, and unique() lists all of those state names as recorded in the dataset.
 
-The experiment followed a structured data science pipeline:
+<img width="1807" height="592" alt="image" src="https://github.com/user-attachments/assets/1f8d275d-989a-4407-807c-89f0ac344a44" />
 
-Data Ingestion: Loading the raw CSV file containing global daily reports.
 
-Data Cleaning & Preprocessing:
 
-Dropping unnecessary columns like SNo and Last Update.
+### Key pandas Commands Used:
 
-Data Acquisition: Import the dataset using pd.read_csv().
+pd.read_csv(): Loads a CSV file into a DataFrame.
 
-Structural Optimization: * Remove non-informative columns using .drop().
+data.head(n): Displays the first n rows (default 5).
 
-Inspect the data architecture using .info() to identify data type mismatches.
+data.drop(): Removes specified rows or columns.
 
-Data Type Normalization:
+data.info(): Displays column names, dtypes, and null counts.
 
-Convert the ObservationDate from a string to a datetime64 object to enable time-series slicing.
+col.astype(): Converts a column to a specified data type.
 
-Convert floating-point counts (like 1.0, 2.0) into int64 to save memory and ensure proper mathematical representation.
+col.max(): Returns the maximum value in a column.
 
-Handling Nulls: Use .fillna(0) for numerical counts and .fillna("Unknown") for categorical labels to prevent errors during aggregation.
+data[condition]: Filters rows using a boolean condition.
 
-Snapshot Analysis:
+col.value_counts(): Counts occurrences of each unique value.
 
-Use .max() to find the most recent date in the record.
+col.nunique(): Returns the count of distinct values.
 
-Filter the DataFrame to create a latest_data subset, representing the current global status.
+col.unique(): Returns an array of distinct values.
 
-Statistical Aggregation:
+data.groupby(): Groups data by a column for aggregation.
 
-Group by Country/Region to get national totals.
+sum(): Sums values within each group.
 
-Group by Province/State for localized analysis (specifically for India).
+reset_index(): Moves the group key back to a regular column.
 
-Visualization:
+sort_values(): Sorts rows by one or more columns.
 
-Plot global confirmed and recovered cases using px.choropleth.
+col.fillna(): Replaces missing NaN values with a given value.
 
-Sort and slice the data using sort_values().head(20) to find the most impacted regions.
+data.iloc[]: Accesses rows by integer position.
 
-pd.to_datetime() : Standardizes date formats for time-series analysis.
+col.values[0]: Extracts the first value as a Python scalar.
 
-px.choropleth() : Creates interactive world maps.
+data.shape: Returns a (rows, columns) tuple.
+
+df.copy(): Creates an independent copy of a DataFrame.
+
+### Plotly Express Commands Used:
+
+px.choropleth(): Creates an interactive choropleth map.
+
+locations=: Column containing geographic identifiers.
+
+locationmode="country names": Matches strings to built-in country boundaries.
+
+geojson=: Custom GeoJSON for sub-national boundaries.
+
+featureidkey=: Path in GeoJSON properties to match locations.
+
+color=: Column mapped to fill colour.
+
+color_continuous_scale=: Named colour palette for the fill gradient.
+
+range_color=: Fixes the minimum and maximum of the colour scale.
+
+hover_name=: Primary label shown in the interactive tooltip.
+
+hover_data=: Additional columns shown in the tooltip.
+
+fig.update_geos(): Configures map zoom, fit, and base layer visibility.
+
+fig.update_layout(): Sets title, margins, and colour bar appearance.
+
+fig.show(): Renders and displays the final interactive figure.
+
 
 5. Conclusion
 
